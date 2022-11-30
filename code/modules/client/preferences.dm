@@ -429,6 +429,7 @@ var/const/MAX_SAVE_SLOTS = 10
 			var/list/special_roles = list(
 			"Xenomorph after<br>unrevivably dead" = 1,
 			"Agent" = 0,
+			"CLF Hijacker" = 0
 			)
 
 			for(var/role_name in special_roles)
@@ -441,6 +442,9 @@ var/const/MAX_SAVE_SLOTS = 10
 
 					if("Agent")
 						ban_check_name = "Agent"
+
+					if("CLF Hijacker on CLF Hijack rounds")
+						ban_check_name = "CLF Hijacker"
 
 				if(jobban_isbanned(user, ban_check_name))
 					dat += "<b>Be [role_name]:</b> <font color=red><b>\[BANNED]</b></font><br>"

@@ -54,6 +54,7 @@
 #define MODE_RANDOM_HIVE		(1<<12)// Makes Join-as-Xeno choose a hive to join as pooled larva at random rather than at user's input..
 #define MODE_THUNDERSTORM		(1<<13)// Enables thunderstorm effects on maps that are compatible with it. (Lit exterior tiles, rain effects)
 #define MODE_FACTION_CLASH		(1<<14)// Disables scopes, sniper sentries, OBs, shooting corpses, dragging enemy corpses, stripping enemy corpses
+#define MODE_CLF_HIJACK		    (1<<15)// Disables scopes(on ground zlevel), sniper sentries, OBs, shooting corpses, dragging enemy corpses, stripping enemy corpses|Handles spawning CLF at roundstart
 
 // Gamemode Toggleable Flags
 #define MODE_NO_SNIPER_SENTRY		(1<<0) /// Upgrade kits will no longer allow you to select long-range upgrades
@@ -72,6 +73,7 @@
 
 #define BE_ALIEN_AFTER_DEATH	1
 #define BE_AGENT				2
+#define BE_CLF_HIJACKER         3
 
 #define TOGGLE_IGNORE_SELF					(1<<0) // Determines whether you will not hurt yourself when clicking yourself
 #define TOGGLE_HELP_INTENT_SAFETY			(1<<1) // Determines whether help intent will be completely harmless
@@ -101,6 +103,7 @@
 var/list/be_special_flags = list(
 	"Xenomorph after unrevivable death" = BE_ALIEN_AFTER_DEATH,
 	"Agent" = BE_AGENT,
+    "CLF Hijacker" = BE_CLF_HIJACKER
 )
 
 #define AGE_MIN 19			//youngest a character can be
@@ -143,6 +146,7 @@ var/global/list/ROLES_SPECIAL		= list(JOB_SURVIVOR)
 
 var/global/list/ROLES_REGULAR_ALL 	= ROLES_CIC+ ROLES_POLICE + ROLES_AUXIL_SUPPORT + ROLES_MISC + ROLES_ENGINEERING + ROLES_REQUISITION + ROLES_MEDICAL + ROLES_MARINES + ROLES_SPECIAL + ROLES_WHITELISTED + ROLES_XENO - ROLES_WO
 var/global/list/ROLES_FACTION_CLASH = ROLES_REGULAR_ALL - ROLES_XENO - ROLES_SPECIAL - ROLES_WHITELISTED + JOB_PREDATOR
+var/global/list/ROLES_CLF_HIJACK    = ROLES_REGULAR_ALL - ROLES_XENO - ROLES_SPECIAL - ROLES_WHITELISTED + JOB_PREDATOR
 
 var/global/list/ROLES_UNASSIGNED  	= list(JOB_SQUAD_MARINE)
 var/global/list/ROLES_WO			= list(JOB_WO_CO, JOB_WO_XO, JOB_WO_CORPORATE_LIAISON, JOB_WO_SYNTH, JOB_WO_CHIEF_POLICE, JOB_WO_SO, JOB_WO_CREWMAN, JOB_WO_POLICE, JOB_WO_PILOT, JOB_WO_CHIEF_ENGINEER, JOB_WO_ORDNANCE_TECH, JOB_WO_CHIEF_REQUISITION, JOB_WO_REQUISITION, JOB_WO_CMO, JOB_WO_DOCTOR, JOB_WO_RESEARCHER, JOB_WO_SQUAD_MARINE, JOB_WO_SQUAD_MEDIC, JOB_WO_SQUAD_ENGINEER, JOB_WO_SQUAD_SMARTGUNNER, JOB_WO_SQUAD_SPECIALIST, JOB_WO_SQUAD_LEADER)

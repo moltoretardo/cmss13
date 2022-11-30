@@ -18,7 +18,7 @@
 
 /obj/item/explosive/grenade/flashbang/Initialize()
 	if(type == /obj/item/explosive/grenade/flashbang) // ugly but we only want to change base level flashbangs
-		if(SSticker.mode && MODE_HAS_FLAG(MODE_FACTION_CLASH))
+		if(SSticker.mode && (MODE_HAS_FLAG(MODE_FACTION_CLASH) || MODE_HAS_FLAG(MODE_CLF_HIJACK)))
 			new /obj/item/explosive/grenade/flashbang/noskill(loc)
 			return INITIALIZE_HINT_QDEL
 		else if(SSticker.current_state < GAME_STATE_PLAYING)
@@ -26,7 +26,7 @@
 	return ..()
 
 /obj/item/explosive/grenade/flashbang/proc/replace_flashbang()
-	if(MODE_HAS_FLAG(MODE_FACTION_CLASH))
+	if(MODE_HAS_FLAG(MODE_FACTION_CLASH) || MODE_HAS_FLAG(MODE_CLF_HIJACK))
 		new /obj/item/explosive/grenade/flashbang/noskill(loc)
 		qdel(src)
 	UnregisterSignal(SSdcs, COMSIG_GLOB_MODE_PRESETUP)

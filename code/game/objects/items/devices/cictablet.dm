@@ -26,14 +26,14 @@
 	COOLDOWN_DECLARE(distress_cooldown)
 
 /obj/item/device/cotablet/Initialize()
-	if(SSticker.mode && MODE_HAS_FLAG(MODE_FACTION_CLASH))
+	if(SSticker.mode && (MODE_HAS_FLAG(MODE_FACTION_CLASH) || MODE_HAS_FLAG(MODE_CLF_HIJACK)))
 		add_pmcs = FALSE
 	else if(SSticker.current_state < GAME_STATE_PLAYING)
 		RegisterSignal(SSdcs, COMSIG_GLOB_MODE_PRESETUP, .proc/disable_pmc)
 	return ..()
 
 /obj/item/device/cotablet/proc/disable_pmc()
-	if(MODE_HAS_FLAG(MODE_FACTION_CLASH))
+	if(MODE_HAS_FLAG(MODE_FACTION_CLASH) || MODE_HAS_FLAG(MODE_CLF_HIJACK))
 		add_pmcs = FALSE
 	UnregisterSignal(SSdcs, COMSIG_GLOB_MODE_PRESETUP)
 

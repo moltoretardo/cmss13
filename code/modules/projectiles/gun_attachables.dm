@@ -842,6 +842,10 @@ Defined in conflicts.dm of the #defines folder.
 			if(user)
 				to_chat(user, SPAN_DANGER("You peer into [src], but it seems to have fogged up. You can't use this!"))
 			return FALSE
+		if((MODE_HAS_FLAG(MODE_CLF_HIJACK) && !ignore_clash_fog) && is_ground_level(user.z))
+			if(user)
+				to_chat(user, SPAN_DANGER("You peer into [src], but it seems to have fogged up. You can't use this!"))
+			return FALSE
 		else
 			G.zoom(user, zoom_offset, zoom_viewsize, allows_movement)
 			apply_scoped_buff(G,user)

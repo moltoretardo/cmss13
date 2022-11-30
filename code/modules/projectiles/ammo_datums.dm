@@ -1802,13 +1802,13 @@
 
 /datum/ammo/bullet/minigun/New()
 	..()
-	if(SSticker.mode && MODE_HAS_FLAG(MODE_FACTION_CLASH))
+	if(SSticker.mode && (MODE_HAS_FLAG(MODE_FACTION_CLASH) || MODE_HAS_FLAG(MODE_CLF_HIJACK)))
 		damage = 15
 	else if(SSticker.current_state < GAME_STATE_PLAYING)
 		RegisterSignal(SSdcs, COMSIG_GLOB_MODE_PRESETUP, .proc/setup_hvh_damage)
 
 /datum/ammo/bullet/minigun/proc/setup_hvh_damage()
-	if(MODE_HAS_FLAG(MODE_FACTION_CLASH))
+	if(MODE_HAS_FLAG(MODE_FACTION_CLASH) || MODE_HAS_FLAG(MODE_CLF_HIJACK))
 		damage = 15
 
 /datum/ammo/bullet/minigun/tank
