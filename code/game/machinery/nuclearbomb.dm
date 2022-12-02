@@ -401,3 +401,37 @@ var/bomb_set = FALSE
 		log_game("[src] has been unexpectedly deleted at ([x],[y],[x]).")
 	bomb_set = FALSE
 	..()
+
+/obj/structure/machinery/nuclearbomb/clf
+	name = "\improper Nuclear Fission Explosive"
+	desc = "A stolen nuke, it appears the access and code requirements were disabled on this one."
+	timeleft = 30 MINUTES
+	end_round = FALSE
+
+/obj/structure/machinery/nuclearbomb/clf/attack_hand(mob/user as mob)
+	if(user.faction == FACTION_CLF)
+		if(!bomb_set)
+			..()
+		else
+			return
+	else
+		if(user.is_mob_incapacitated() || !user.canmove || get_dist(src, user) > 1 || isRemoteControlling(user))
+			return
+		ui_act("Toggle Nuke")
+
+/obj/structure/machinery/nuclearbomb/clf/attackby()
+	return
+
+/obj/structure/machinery/nuclearbomb/clf/proc/explode()
+	..()
+	//I need an end round trigger here for CLF victory. Need to not announce first nuke arming probably unless i make it until they land, then timer starts.
+
+/obj/structure/machinery/nuclearbomb/clf/get_examine_text(mob/user)
+	. = ..()
+	. += SPAN_DANGER("The timer says [duration2text_sec(round(rand(timeleft - timeleft / 10, timeleft + timeleft / 10)))] seconds.")
+
+/obj/structure/machinery/nuclearbomb/clf/proc/disable()
+	timing = FALSE
+	bomb_set = FALSE
+	explosion_time = null
+	announce_to_players()
