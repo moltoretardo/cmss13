@@ -409,28 +409,40 @@ var/bomb_set = FALSE
 	end_round = FALSE
 
 /obj/structure/machinery/nuclearbomb/clf/attack_hand(mob/user as mob)
-	if(user.faction == FACTION_CLF)
-		if(!bomb_set)
-			..()
-		else
-			return
+	if(isHumanSynthStrict(user))
+		if(user.faction == FACTION_CLF)
+			if(!bomb_set)
+				..()
+			else
+				return
+		else if(bomb_set && timing != -1)
+			if(user.is_mob_incapacitated() || !user.canmove || get_dist(src, user) > 1 || isRemoteControlling(user) || user.action_busy)
+				return
+			usr.visible_message(SPAN_WARNING("[usr] begins to [timing ? "disengage" : "engage"] [src]!"), SPAN_WARNING("You begin to [timing ? "disengage" : "engage"] [src]."))
+			being_used = TRUE
+			if(do_after(usr, 50, INTERRUPT_NO_NEEDHAND, BUSY_ICON_HOSTILE))
+				if(timing)
+					bomb_set = FALSE
+					disable()
+					message_staff("[src] has been deactivated by [key_name(usr, 1)](<A HREF='?_src_=admin_holder;[HrefToken(forceGlobal = TRUE)];adminplayerobservejump=[usr]'>JMP</A>)")
+				playsound(src.loc, 'sound/effects/thud.ogg', 100, 1)
+			update_icon()
+			being_used = FALSE
 	else
-		if(user.is_mob_incapacitated() || !user.canmove || get_dist(src, user) > 1 || isRemoteControlling(user))
-			return
-		ui_act("Toggle Nuke")
+		return
 
 /obj/structure/machinery/nuclearbomb/clf/attackby()
 	return
 
-/obj/structure/machinery/nuclearbomb/clf/proc/explode()
+/obj/structure/machinery/nuclearbomb/clf/explode()
 	..()
 	//I need an end round trigger here for CLF victory. Need to not announce first nuke arming probably unless i make it until they land, then timer starts.
 
 /obj/structure/machinery/nuclearbomb/clf/get_examine_text(mob/user)
 	. = ..()
-	. += SPAN_DANGER("The timer says [duration2text_sec(round(rand(timeleft - timeleft / 10, timeleft + timeleft / 10)))] seconds.")
+	. += SPAN_DANGER("The timer says [duration2text_sec(timeleft)] minutes.")
 
-/obj/structure/machinery/nuclearbomb/clf/proc/disable()
+/obj/structure/machinery/nuclearbomb/clf/disable()
 	timing = FALSE
 	bomb_set = FALSE
 	explosion_time = null

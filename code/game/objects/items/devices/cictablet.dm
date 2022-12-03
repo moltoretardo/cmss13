@@ -191,3 +191,19 @@
 	tacmap_base_type = TACMAP_BASE_OPEN
 	tacmap_additional_parameter = FACTION_PMC
 	minimap_name = "PMC Minimap"
+
+/obj/item/device/cotablet/clf
+	desc = "An old tablet used by CLF, probably stolen."
+
+	tablet_name = "CLF Cell Tablet"
+
+	announcement_title = CLF_COMMAND_ANNOUNCE
+	announcement_faction = FACTION_CLF
+
+	tacmap_type = TACMAP_FACTION
+	tacmap_base_type = TACMAP_BASE_OPEN
+	tacmap_additional_parameter = FACTION_CLF
+	minimap_name = "CLF Minimap"
+
+/obj/item/device/cotablet/clf/ui_act(action, list/params, datum/tgui/ui, datum/ui_state/state)
+//TODO
