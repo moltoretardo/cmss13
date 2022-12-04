@@ -206,4 +206,56 @@
 	minimap_name = "CLF Minimap"
 
 /obj/item/device/cotablet/clf/ui_act(action, list/params, datum/tgui/ui, datum/ui_state/state)
-//TODO
+	. = ..()
+	if(.)
+		return
+
+	switch(action)
+		if("announce")
+			if(!COOLDOWN_FINISHED(src, announcement_cooldown))
+				to_chat(usr, SPAN_WARNING("Please wait [COOLDOWN_TIMELEFT(src, announcement_cooldown)/10] second\s before making your next announcement."))
+				return FALSE
+
+			var/input = stripped_multiline_input(usr, "Please write a message to announce to all CLF within sensor range.", "Priority Announcement", "")
+			if(!input || !COOLDOWN_FINISHED(src, announcement_cooldown) || !(usr in view(1, src)))
+				return FALSE
+
+			var/signed = null
+			if(ishuman(usr))
+				var/mob/living/carbon/human/H = usr
+				var/obj/item/card/id/id = H.wear_id
+				if(istype(id))
+					var/paygrade = get_paygrades(id.paygrade, FALSE, H.gender)
+					signed = "[paygrade] [id.registered_name]"
+
+			marine_announcement(input, announcement_title, faction_to_display = announcement_faction, add_PMCs = add_pmcs, signature = signed)
+			message_staff("[key_name(usr)] has made a command announcement.")
+			log_announcement("[key_name(usr)] has announced the following: [input]")
+			COOLDOWN_START(src, announcement_cooldown, cooldown_between_messages)
+			. = TRUE
+
+		if("mapview")
+			if(current_mapviewer)
+				update_mapview(TRUE)
+				. = TRUE
+				return
+			current_mapviewer = usr
+			update_mapview()
+			. = TRUE
+
+		if("nukespawn")
+			//spawn
+			. = TRUE
+
+		if("commsspawn")
+			//spawn
+			. = TRUE
+
+		if("armoryspawn")
+			/*
+			/obj/structure/ship_ammo/sentry/detonate_on(turf/impact)
+			var/obj/structure/droppod/equipment/sentry/droppod = new(impact, /obj/structure/machinery/defenses/sentry/launchable, source_mob)
+			droppod.drop_time = 5 SECONDS
+			droppod.launch(impact)
+			qdel(src)*/
+			. = TRUE
