@@ -176,7 +176,7 @@
  * Double-Bladed Energy Swords - Cheridan
  */
 /obj/item/weapon/melee/twohanded/dualsaber
-	name = "double-bladed energy sword"
+	name = "double-bladed energy sword"   //<----- you should add this shaddeh
 	desc = "Handle with care."
 	icon_state = "dualsaber"
 	item_state = "dualsaber"
