@@ -205,6 +205,12 @@
 	tacmap_additional_parameter = FACTION_CLF
 	minimap_name = "CLF Minimap"
 
+/obj/item/device/cotablet/clf/tgui_interact(mob/user, datum/tgui/ui, datum/ui_state/state)
+	ui = SStgui.try_update_ui(user, src, ui)
+	if(!ui)
+		ui = new(user, src, "ClfTablet", "CLF Tablet")
+		ui.open()
+
 /obj/item/device/cotablet/clf/ui_act(action, list/params, datum/tgui/ui, datum/ui_state/state)
 	. = ..()
 	if(.)
@@ -245,6 +251,7 @@
 
 		if("nukespawn")
 			//spawn
+			handle_nukedrop(src)
 			. = TRUE
 
 		if("commsspawn")
@@ -259,3 +266,33 @@
 			droppod.launch(impact)
 			qdel(src)*/
 			. = TRUE
+
+/obj/item/device/cotablet/clf/proc/handle_nukedrop(var/mob/user)
+	SHOULD_NOT_SLEEP(TRUE) // <-- I have no idea what it does I stole it
+	var/x_coord = user.loc.x
+	var/y_coord = user.loc.y
+	var/z_coord = SSmapping.levels_by_trait(ZTRAIT_GROUND)
+
+	if(length(z_coord))
+		z_coord = z_coord[1]
+	else
+		z_coord = 1 // fuck it we ball
+
+	var/turf/target = locate(x_coord, y_coord, z_coord)
+	if(!target)
+		to_chat(usr, "[icon2html(src, usr)] [SPAN_WARNING("Error, invalid coordinates.")]")
+		return
+	var/area/areatargeted = get_area(target)
+	if(areatargeted && CEILING_IS_PROTECTED(areatargeted.ceiling, CEILING_PROTECTION_TIER_2))
+		to_chat(usr, "[icon2html(src, usr)] [SPAN_WARNING("The landing zone is underground. The air drop cannot reach here.")]")
+		return
+	if(istype(target, /turf/open/space) || target.density)
+		to_chat(usr, "[icon2html(src, usr)] [SPAN_WARNING("The landing zone appears to be obstructed or out of bounds. Package would be lost on drop.")]")
+		return
+
+	var/obj/structure/machinery/nuclearbomb/clfnuke = /obj/structure/machinery/nuclearbomb
+	var/obj/structure/droppod/supply/pod = new()
+	clfnuke = new()
+	clfnuke.forceMove(pod)
+	pod.launch(target)
+
