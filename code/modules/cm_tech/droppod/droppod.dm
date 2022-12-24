@@ -12,9 +12,10 @@
 	wrenchable = TRUE
 
 	var/droppod_flags = NO_FLAGS
-
 	var/land_damage = 5000
 	var/tiles_to_take = 15
+
+	var/close_on_recall = TRUE
 
 	var/drop_time = 0
 	var/dropping_time = 2 SECONDS
@@ -166,7 +167,7 @@
 	if(droppod_flags & DROPPOD_RETURNING)
 		return
 
-	if(droppod_flags & DROPPOD_OPEN)
+	if(droppod_flags & DROPPOD_OPEN & close_on_recall)
 		close()
 
 	droppod_flags &= ~(DROPPOD_DROPPED)

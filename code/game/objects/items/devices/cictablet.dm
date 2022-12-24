@@ -205,6 +205,19 @@
 	tacmap_additional_parameter = FACTION_CLF
 	minimap_name = "CLF Minimap"
 
+	//this is all the airdrop thingies
+	#define NUKEDROP 1
+	#define AADROP 2
+	#define ARMORYDROP 3
+	#define TACMAPDROP 4
+
+	var/payload = null
+	var/nukeAmount = 1
+	var/aaAmount = 2
+	var/armoryAmount = 5
+	var/tacmapAmount = 1
+
+
 /obj/item/device/cotablet/clf/tgui_interact(mob/user, datum/tgui/ui, datum/ui_state/state)
 	ui = SStgui.try_update_ui(user, src, ui)
 	if(!ui)
@@ -217,7 +230,7 @@
 		return
 
 	switch(action)
-		if("announce")
+		if("announceCLF")
 			if(!COOLDOWN_FINISHED(src, announcement_cooldown))
 				to_chat(usr, SPAN_WARNING("Please wait [COOLDOWN_TIMELEFT(src, announcement_cooldown)/10] second\s before making your next announcement."))
 				return FALSE
@@ -250,24 +263,22 @@
 			. = TRUE
 
 		if("nukespawn")
-			//spawn
-			handle_nukedrop(src)
+			handle_airdrop(src,NUKEDROP)
 			. = TRUE
 
-		if("commsspawn")
-			//spawn
+		if("antiairstrikespawn")
+			handle_airdrop(src,AADROP)
 			. = TRUE
 
 		if("armoryspawn")
-			/*
-			/obj/structure/ship_ammo/sentry/detonate_on(turf/impact)
-			var/obj/structure/droppod/equipment/sentry/droppod = new(impact, /obj/structure/machinery/defenses/sentry/launchable, source_mob)
-			droppod.drop_time = 5 SECONDS
-			droppod.launch(impact)
-			qdel(src)*/
+			handle_airdrop(src,ARMORYDROP)
 			. = TRUE
 
-/obj/item/device/cotablet/clf/proc/handle_nukedrop(var/mob/user)
+		if("tacmapspawn")
+			handle_airdrop(src,TACMAPDROP)
+			. = TRUE
+
+/obj/item/device/cotablet/clf/proc/handle_airdrop(var/mob/user,droptype) //this handle the drop duh
 	SHOULD_NOT_SLEEP(TRUE) // <-- I have no idea what it does I stole it
 	var/x_coord = user.loc.x
 	var/y_coord = user.loc.y
@@ -282,17 +293,40 @@
 	if(!target)
 		to_chat(usr, "[icon2html(src, usr)] [SPAN_WARNING("Error, invalid coordinates.")]")
 		return
-	var/area/areatargeted = get_area(target)
-	if(areatargeted && CEILING_IS_PROTECTED(areatargeted.ceiling, CEILING_PROTECTION_TIER_2))
-		to_chat(usr, "[icon2html(src, usr)] [SPAN_WARNING("The landing zone is underground. The air drop cannot reach here.")]")
-		return
+
 	if(istype(target, /turf/open/space) || target.density)
 		to_chat(usr, "[icon2html(src, usr)] [SPAN_WARNING("The landing zone appears to be obstructed or out of bounds. Package would be lost on drop.")]")
 		return
 
-	var/obj/structure/machinery/nuclearbomb/clfnuke = /obj/structure/machinery/nuclearbomb
-	var/obj/structure/droppod/supply/pod = new()
-	clfnuke = new()
-	clfnuke.forceMove(pod)
-	pod.launch(target)
+	var/obj/structure/droppod/container/pod = new()
+	pod.should_recall = TRUE
+	pod.can_be_opened = FALSE
+	pod.density = TRUE
+	pod.return_time = 10 SECONDS
+	pod.close_on_recall = FALSE
+
+	switch(droptype)
+		if(1)
+			var/obj/structure/machinery/nuclearbomb/clf/payload = /obj/structure/machinery/nuclearbomb/clf
+			payload = new()
+			payload.forceMove(pod)
+			pod.launch(target)
+		if(2)
+			var/obj/item/weapon/melee/twohanded/dualsaber/payload = /obj/item/weapon/melee/twohanded/dualsaber
+			payload = new()
+			payload.forceMove(pod)
+			pod.launch(target)
+		if(3)
+			var/obj/structure/machinery/cm_vending/gear/antag/payload = /obj/structure/machinery/cm_vending/gear/antag
+			payload = new()
+			payload.forceMove(pod)
+			pod.launch(target)
+		if(4)
+			var/obj/structure/machinery/prop/almayer/CICmap/clf/payload = /obj/structure/machinery/prop/almayer/CICmap/clf
+			payload = new()
+			payload.forceMove(pod)
+			pod.launch(target)
+		else
+			return()
+
 

@@ -13,6 +13,8 @@ export const ClfTablet = (_props, context) => {
 
   const canAnnounce = data.endtime < data.worldtime;
 
+  const canBuild = data.endtime < data.worldtime;
+
   const roundends = data.roundends;
 
   return (
@@ -33,7 +35,7 @@ export const ClfTablet = (_props, context) => {
                   icon="bullhorn"
                   title="Make an announcement"
                   content="Make an announcement"
-                  onClick={() => act('announce')}
+                  onClick={() => act('announceCLF')}
                   disabled={!canAnnounce}
                 />
               )}
@@ -56,6 +58,10 @@ export const ClfTablet = (_props, context) => {
                 onClick={() => act('mapview')}
               />
             </Flex.Item>
+          </Flex>
+        </Section>
+        <Section title="CLF building">
+          <Flex height="100%" direction="column">
             <Flex.Item>
               <Button
                 fluid={1}
@@ -68,10 +74,10 @@ export const ClfTablet = (_props, context) => {
             <Flex.Item>
               <Button
                 fluid={1}
-                icon="globe-africa"
+                icon="map-location-dot"
                 title="Call tactical map airdrop"
                 content="Call tactical map airdrop"
-                onClick={() => act('radar')}
+                onClick={() => act('tacmapspawn')}
               />
             </Flex.Item>
             <Flex.Item>
@@ -79,8 +85,8 @@ export const ClfTablet = (_props, context) => {
                 fluid={1}
                 icon="gun"
                 title="Call armory airdrop"
-                content="Call armory airdrop"
-                onClick={() => act('armory')}
+                content="wabababa"
+                onClick={() => act('armoryspawn')}
               />
             </Flex.Item>
             <Flex.Item>
@@ -89,7 +95,7 @@ export const ClfTablet = (_props, context) => {
                 icon="plane-slash"
                 title="Call Anti-Airstrike"
                 content="Call Anti-Airstrike airdrop"
-                onClick={() => act('antiairstrike')}
+                onClick={() => act('antiairstrikespawn')}
               />
             </Flex.Item>
           </Flex>

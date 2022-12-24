@@ -7,7 +7,6 @@
 	land_layer = BELOW_OBJ_LAYER
 
 	var/can_be_opened = TRUE
-
 	var/gib_on_land = FALSE
 	var/stealth = FALSE
 
