@@ -194,8 +194,10 @@
 
 /obj/item/device/cotablet/clf
 	desc = "An old tablet used by CLF, probably stolen."
-
 	tablet_name = "CLF Cell Tablet"
+
+	var/cooldown_between_building = COOLDOWN_CLF_BUILDING
+	COOLDOWN_DECLARE(announcement_building_cooldown)
 
 	announcement_title = CLF_COMMAND_ANNOUNCE
 	announcement_faction = FACTION_CLF
@@ -211,12 +213,30 @@
 	#define ARMORYDROP 3
 	#define TACMAPDROP 4
 
-	var/payload = null
 	var/nukeAmount = 1
 	var/aaAmount = 2
 	var/armoryAmount = 5
 	var/tacmapAmount = 1
 
+/obj/item/device/cotablet/clf/ui_static_data(mob/user)
+	var/list/data = list()
+
+	data["faction"] = announcement_faction
+	data["cooldown_message"] = cooldown_between_messages
+	data["cooldown_building"] = cooldown_between_building
+
+	return data
+
+/obj/item/device/cotablet/clf/ui_data(mob/user)
+	var/list/data = list()
+
+	data["endtime"] = announcement_cooldown
+	data["distresstimelock"] = DISTRESS_TIME_LOCK
+	data["worldtime"] = world.time
+	data["building_endtime"] = announcement_building_cooldown
+
+
+	return data
 
 /obj/item/device/cotablet/clf/tgui_interact(mob/user, datum/tgui/ui, datum/ui_state/state)
 	ui = SStgui.try_update_ui(user, src, ui)
@@ -224,7 +244,7 @@
 		ui = new(user, src, "ClfTablet", "CLF Tablet")
 		ui.open()
 
-/obj/item/device/cotablet/clf/ui_act(action, list/params, datum/tgui/ui, datum/ui_state/state)
+/obj/item/device/cotablet/clf/ui_act(action, list/params, datum/tgui/ui, datum/ui_state/state) //This handles the tablet buttons
 	. = ..()
 	if(.)
 		return
@@ -263,20 +283,25 @@
 			. = TRUE
 
 		if("nukespawn")
-			handle_airdrop(src,NUKEDROP)
-			. = TRUE
+			if(nukeAmount>0)
+				handle_airdrop(src,NUKEDROP)
+				. = TRUE
 
 		if("antiairstrikespawn")
-			handle_airdrop(src,AADROP)
-			. = TRUE
+			if(aaAmount>0)
+				handle_airdrop(src,AADROP)
+				. = TRUE
 
 		if("armoryspawn")
-			handle_airdrop(src,ARMORYDROP)
-			. = TRUE
+			if(armoryAmount>0)
+				handle_airdrop(src,ARMORYDROP)
+				. = TRUE
 
 		if("tacmapspawn")
-			handle_airdrop(src,TACMAPDROP)
-			. = TRUE
+			if(tacmapAmount>0)
+				handle_airdrop(src,TACMAPDROP)
+				tacmapAmount--
+				. = TRUE
 
 /obj/item/device/cotablet/clf/proc/handle_airdrop(var/mob/user,droptype) //this handle the drop duh
 	SHOULD_NOT_SLEEP(TRUE) // <-- I have no idea what it does I stole it
@@ -298,6 +323,7 @@
 		to_chat(usr, "[icon2html(src, usr)] [SPAN_WARNING("The landing zone appears to be obstructed or out of bounds. Package would be lost on drop.")]")
 		return
 
+	COOLDOWN_START(src, announcement_building_cooldown, cooldown_between_building) //starts the 15 seconds button cooldown
 	var/obj/structure/droppod/container/pod = new()
 	pod.should_recall = TRUE
 	pod.can_be_opened = FALSE
@@ -311,21 +337,25 @@
 			payload = new()
 			payload.forceMove(pod)
 			pod.launch(target)
+			nukeAmount--
 		if(2)
 			var/obj/item/weapon/melee/twohanded/dualsaber/payload = /obj/item/weapon/melee/twohanded/dualsaber
 			payload = new()
 			payload.forceMove(pod)
 			pod.launch(target)
+			aaAmount--
 		if(3)
 			var/obj/structure/machinery/cm_vending/gear/antag/payload = /obj/structure/machinery/cm_vending/gear/antag
 			payload = new()
 			payload.forceMove(pod)
 			pod.launch(target)
+			armoryAmount--
 		if(4)
 			var/obj/structure/machinery/prop/almayer/CICmap/clf/payload = /obj/structure/machinery/prop/almayer/CICmap/clf
 			payload = new()
 			payload.forceMove(pod)
 			pod.launch(target)
+			tacmapAmount--
 		else
 			return()
 

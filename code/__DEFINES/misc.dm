@@ -248,5 +248,7 @@
 #define COOLDOWN_COMM_CENTRAL		30 SECONDS
 #define COOLDOWN_COMM_DESTRUCT		5 MINUTES
 
+//CLF tablet building cooldown defines:
+#define COOLDOWN_CLF_BUILDING		15 SECONDS
 // filters
 #define AMBIENT_OCCLUSION filter(type="drop_shadow", x=0, y=-2, size=4, border=4, color="#04080FAA")

@@ -1,0 +1,42 @@
+@use 'sass:color';
+@use 'sass:meta';
+
+@use '../colors.scss' with (
+  $primary: #000000,
+  $fg-map-keys: (),
+  $bg-map-keys: (),
+);
+@use '../base.scss' with (
+  $color-bg: #0c0e1e,
+  $color-bg-grad-spread: 0%,
+  $border-radius: 0,
+);
+
+// CLF theme
+.theme-clf {
+  .Layout__content {
+    background-color: #443232;
+    background-image: url('../../assets/bg-clf.png'); //<-- this is a placeholder!! until a real background is made
+    background-position: top;
+    background-size: contain;
+    background-repeat: no-repeat;
+  }
+
+  .TitleBar {
+    background-image: url('../../assets/titlebar-clf.png');
+    background-position: right 40px top 50%;
+    background-repeat: no-repeat;
+  }
+
+  // Components
+  @include meta.load-css(
+    '../components/Button.scss',
+    $with: (
+      'color-default': #e8e4c9,
+      'color-disabled': #505046,
+      'color-selected': #9d0808,
+      'color-caution': #be6209,
+      'color-danger': #9a9d00
+    )
+  );
+}

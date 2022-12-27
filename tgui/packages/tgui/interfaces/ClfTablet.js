@@ -5,20 +5,16 @@ import { Window } from '../layouts';
 export const ClfTablet = (_props, context) => {
   const { act, data } = useBackend(context);
 
-  const evacstatus = data.evac_status;
-
-  const AlertLevel = data.alert_level;
-
   const minimumTimeElapsed = data.worldtime > data.distresstimelock;
 
   const canAnnounce = data.endtime < data.worldtime;
 
-  const canBuild = data.endtime < data.worldtime;
+  const canBuild = data.building_endtime < data.worldtime;
 
   const roundends = data.roundends;
 
   return (
-    <Window width={350} height={350} theme="retro">
+    <Window width={350} height={350} theme="clf">
       <Window.Content scrollable>
         <Section title="CLF Command">
           <Flex height="100%" direction="column">
@@ -43,15 +39,6 @@ export const ClfTablet = (_props, context) => {
             <Flex.Item>
               <Button
                 fluid={1}
-                icon="medal"
-                title="Give a medal"
-                content="Give a medal"
-                onClick={() => act('award')}
-              />
-            </Flex.Item>
-            <Flex.Item>
-              <Button
-                fluid={1}
                 icon="globe-africa"
                 title="View tactical map"
                 content="View tactical map"
@@ -63,40 +50,76 @@ export const ClfTablet = (_props, context) => {
         <Section title="CLF building">
           <Flex height="100%" direction="column">
             <Flex.Item>
-              <Button
-                fluid={1}
-                icon="circle-radiation"
-                title="Call nuke airdrop"
-                content="Call nuke airdrop"
-                onClick={() => act('nukespawn')}
-              />
+              {!canBuild && (
+                <Button color="bad" warning={1} fluid={1} icon="ban">
+                  Building on cooldown :{' '}
+                  {Math.ceil((data.building_endtime - data.worldtime) / 10)}{' '}
+                  secs
+                </Button>
+              )}
+              {!!canBuild && (
+                <Button
+                  fluid={1}
+                  icon="circle-radiation"
+                  title="Call nuke airdrop"
+                  content="Call nuke airdrop"
+                  onClick={() => act('nukespawn')}
+                />
+              )}
             </Flex.Item>
             <Flex.Item>
-              <Button
-                fluid={1}
-                icon="map-location-dot"
-                title="Call tactical map airdrop"
-                content="Call tactical map airdrop"
-                onClick={() => act('tacmapspawn')}
-              />
+              {!canBuild && (
+                <Button color="bad" warning={1} fluid={1} icon="ban">
+                  Building on cooldown :{' '}
+                  {Math.ceil((data.building_endtime - data.worldtime) / 10)}{' '}
+                  secs
+                </Button>
+              )}
+              {!!canBuild && (
+                <Button
+                  fluid={1}
+                  icon="map-location-dot"
+                  title="Call tactical map airdrop"
+                  content="Call tactical map airdrop"
+                  onClick={() => act('tacmapspawn')}
+                />
+              )}
             </Flex.Item>
             <Flex.Item>
-              <Button
-                fluid={1}
-                icon="gun"
-                title="Call armory airdrop"
-                content="wabababa"
-                onClick={() => act('armoryspawn')}
-              />
+              {!canBuild && (
+                <Button color="bad" warning={1} fluid={1} icon="ban">
+                  Building on cooldown :{' '}
+                  {Math.ceil((data.building_endtime - data.worldtime) / 10)}{' '}
+                  secs
+                </Button>
+              )}
+              {!!canBuild && (
+                <Button
+                  fluid={1}
+                  icon="gun"
+                  title="Call armory airdrop"
+                  content="Call armory airdrop"
+                  onClick={() => act('armoryspawn')}
+                />
+              )}
             </Flex.Item>
             <Flex.Item>
-              <Button
-                fluid={1}
-                icon="plane-slash"
-                title="Call Anti-Airstrike"
-                content="Call Anti-Airstrike airdrop"
-                onClick={() => act('antiairstrikespawn')}
-              />
+              {!canBuild && (
+                <Button color="bad" warning={1} fluid={1} icon="ban">
+                  Building on cooldown :{' '}
+                  {Math.ceil((data.building_endtime - data.worldtime) / 10)}{' '}
+                  secs
+                </Button>
+              )}
+              {!!canBuild && (
+                <Button
+                  fluid={1}
+                  icon="plane-slash"
+                  title="Call Anti-Airstrike"
+                  content="Call Anti-Airstrike airdrop"
+                  onClick={() => act('antiairstrikespawn')}
+                />
+              )}
             </Flex.Item>
           </Flex>
         </Section>
