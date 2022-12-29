@@ -9,7 +9,21 @@ export const ClfTablet = (_props, context) => {
 
   const canAnnounce = data.endtime < data.worldtime;
 
-  const canBuild = data.building_endtime < data.worldtime;
+  const canBuildNuke = data.buildingNuke_endtime < data.worldtime;
+
+  const canBuildAA = data.buildingAA_endtime < data.worldtime;
+
+  const canBuildArmory = data.buildingArmory_endtime < data.worldtime;
+
+  const canBuildTacmap = data.buildingTacmap_endtime < data.worldtime;
+
+  const hasNuke = data.numberNuke > 0;
+
+  const hasAA = data.numberAA > 0;
+
+  const hasArmory = data.numberArmory > 0;
+
+  const hasTacmap = data.numberTacmap > 0;
 
   const roundends = data.roundends;
 
@@ -50,14 +64,19 @@ export const ClfTablet = (_props, context) => {
         <Section title="CLF building">
           <Flex height="100%" direction="column">
             <Flex.Item>
-              {!canBuild && (
+              {!hasNuke && canBuildNuke && (
+                <Button color="bad" warning={1} fluid={1} icon="ban">
+                  No nuke left!
+                </Button>
+              )}
+              {!canBuildNuke && (
                 <Button color="bad" warning={1} fluid={1} icon="ban">
                   Building on cooldown :{' '}
-                  {Math.ceil((data.building_endtime - data.worldtime) / 10)}{' '}
+                  {Math.ceil((data.buildingNuke_endtime - data.worldtime) / 10)}{' '}
                   secs
                 </Button>
               )}
-              {!!canBuild && (
+              {!!canBuildNuke && hasNuke && (
                 <Button
                   fluid={1}
                   icon="circle-radiation"
@@ -68,14 +87,21 @@ export const ClfTablet = (_props, context) => {
               )}
             </Flex.Item>
             <Flex.Item>
-              {!canBuild && (
+              {!hasTacmap && canBuildTacmap && (
+                <Button color="bad" warning={1} fluid={1} icon="ban">
+                  No tacmap left!
+                </Button>
+              )}
+              {!canBuildTacmap && (
                 <Button color="bad" warning={1} fluid={1} icon="ban">
                   Building on cooldown :{' '}
-                  {Math.ceil((data.building_endtime - data.worldtime) / 10)}{' '}
+                  {Math.ceil(
+                    (data.buildingTacmap_endtime - data.worldtime) / 10
+                  )}{' '}
                   secs
                 </Button>
               )}
-              {!!canBuild && (
+              {!!canBuildTacmap && hasTacmap && (
                 <Button
                   fluid={1}
                   icon="map-location-dot"
@@ -86,14 +112,21 @@ export const ClfTablet = (_props, context) => {
               )}
             </Flex.Item>
             <Flex.Item>
-              {!canBuild && (
+              {!hasArmory && canBuildArmory && (
+                <Button color="bad" warning={1} fluid={1} icon="ban">
+                  No armory left!
+                </Button>
+              )}
+              {!canBuildArmory && (
                 <Button color="bad" warning={1} fluid={1} icon="ban">
                   Building on cooldown :{' '}
-                  {Math.ceil((data.building_endtime - data.worldtime) / 10)}{' '}
+                  {Math.ceil(
+                    (data.buildingArmory_endtime - data.worldtime) / 10
+                  )}{' '}
                   secs
                 </Button>
               )}
-              {!!canBuild && (
+              {!!canBuildArmory && hasArmory && (
                 <Button
                   fluid={1}
                   icon="gun"
@@ -104,14 +137,19 @@ export const ClfTablet = (_props, context) => {
               )}
             </Flex.Item>
             <Flex.Item>
-              {!canBuild && (
+              {!hasAA && canBuildAA && (
+                <Button color="bad" warning={1} fluid={1} icon="ban">
+                  No anti-air left!
+                </Button>
+              )}
+              {!canBuildAA && (
                 <Button color="bad" warning={1} fluid={1} icon="ban">
                   Building on cooldown :{' '}
-                  {Math.ceil((data.building_endtime - data.worldtime) / 10)}{' '}
+                  {Math.ceil((data.buildingAA_endtime - data.worldtime) / 10)}{' '}
                   secs
                 </Button>
               )}
-              {!!canBuild && (
+              {!!canBuildAA && hasAA && (
                 <Button
                   fluid={1}
                   icon="plane-slash"

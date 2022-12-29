@@ -280,7 +280,7 @@ const getTheme = (value: string | number): string => {
     case THEME_UPP:
       return 'abductor';
     case THEME_CLF:
-      return 'retro';
+      return 'clf';
     case THEME_COMP:
       return 'weyland';
     default:

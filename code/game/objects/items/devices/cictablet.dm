@@ -197,7 +197,10 @@
 	tablet_name = "CLF Cell Tablet"
 
 	var/cooldown_between_building = COOLDOWN_CLF_BUILDING
-	COOLDOWN_DECLARE(announcement_building_cooldown)
+	COOLDOWN_DECLARE(buildingNuke_cooldown) //reusing the same cooldown sadly make 4 of them go on cooldown
+	COOLDOWN_DECLARE(buildingAA_cooldown)
+	COOLDOWN_DECLARE(buildingArmory_cooldown)
+	COOLDOWN_DECLARE(buildingTacmap_cooldown)
 
 	announcement_title = CLF_COMMAND_ANNOUNCE
 	announcement_faction = FACTION_CLF
@@ -233,8 +236,14 @@
 	data["endtime"] = announcement_cooldown
 	data["distresstimelock"] = DISTRESS_TIME_LOCK
 	data["worldtime"] = world.time
-	data["building_endtime"] = announcement_building_cooldown
-
+	data["buildingNuke_endtime"] = buildingNuke_cooldown
+	data["buildingAA_endtime"] = buildingAA_cooldown
+	data["buildingArmory_endtime"] = buildingArmory_cooldown
+	data["buildingTacmap_endtime"] = buildingTacmap_cooldown
+	data["numberNuke"] = nukeAmount
+	data["numberAA"] = aaAmount
+	data["numberArmory"] = armoryAmount
+	data["numberTacmap"] = tacmapAmount
 
 	return data
 
@@ -323,12 +332,11 @@
 		to_chat(usr, "[icon2html(src, usr)] [SPAN_WARNING("The landing zone appears to be obstructed or out of bounds. Package would be lost on drop.")]")
 		return
 
-	COOLDOWN_START(src, announcement_building_cooldown, cooldown_between_building) //starts the 15 seconds button cooldown
 	var/obj/structure/droppod/container/pod = new()
 	pod.should_recall = TRUE
 	pod.can_be_opened = FALSE
 	pod.density = TRUE
-	pod.return_time = 10 SECONDS
+	pod.return_time = 5 SECONDS
 	pod.close_on_recall = FALSE
 
 	switch(droptype)
@@ -338,24 +346,29 @@
 			payload.forceMove(pod)
 			pod.launch(target)
 			nukeAmount--
+			COOLDOWN_START(src, buildingNuke_cooldown, cooldown_between_building) //starts the 1 seconds button cooldown
 		if(2)
 			var/obj/item/weapon/melee/twohanded/dualsaber/payload = /obj/item/weapon/melee/twohanded/dualsaber
 			payload = new()
 			payload.forceMove(pod)
 			pod.launch(target)
 			aaAmount--
+			COOLDOWN_START(src, buildingAA_cooldown, cooldown_between_building) //starts the 1 seconds button cooldown
 		if(3)
 			var/obj/structure/machinery/cm_vending/gear/antag/payload = /obj/structure/machinery/cm_vending/gear/antag
 			payload = new()
 			payload.forceMove(pod)
 			pod.launch(target)
 			armoryAmount--
+			COOLDOWN_START(src, buildingArmory_cooldown, cooldown_between_building) //starts the 1 seconds button cooldown
 		if(4)
 			var/obj/structure/machinery/prop/almayer/CICmap/clf/payload = /obj/structure/machinery/prop/almayer/CICmap/clf
 			payload = new()
+			payload.use_power = 0
 			payload.forceMove(pod)
 			pod.launch(target)
 			tacmapAmount--
+			COOLDOWN_START(src, buildingTacmap_cooldown, cooldown_between_building) //starts the 1 seconds button cooldown
 		else
 			return()
 
