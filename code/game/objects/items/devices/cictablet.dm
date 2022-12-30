@@ -340,28 +340,28 @@
 	pod.close_on_recall = FALSE
 
 	switch(droptype)
-		if(1)
+		if(NUKEDROP)
 			var/obj/structure/machinery/nuclearbomb/clf/payload = /obj/structure/machinery/nuclearbomb/clf
 			payload = new()
 			payload.forceMove(pod)
 			pod.launch(target)
 			nukeAmount--
 			COOLDOWN_START(src, buildingNuke_cooldown, cooldown_between_building) //starts the 1 seconds button cooldown
-		if(2)
+		if(AADROP)
 			var/obj/item/weapon/melee/twohanded/dualsaber/payload = /obj/item/weapon/melee/twohanded/dualsaber
 			payload = new()
 			payload.forceMove(pod)
 			pod.launch(target)
 			aaAmount--
 			COOLDOWN_START(src, buildingAA_cooldown, cooldown_between_building) //starts the 1 seconds button cooldown
-		if(3)
+		if(ARMORYDROP)
 			var/obj/structure/machinery/cm_vending/gear/antag/payload = /obj/structure/machinery/cm_vending/gear/antag
 			payload = new()
 			payload.forceMove(pod)
 			pod.launch(target)
 			armoryAmount--
 			COOLDOWN_START(src, buildingArmory_cooldown, cooldown_between_building) //starts the 1 seconds button cooldown
-		if(4)
+		if(TACMAPDROP)
 			var/obj/structure/machinery/prop/almayer/CICmap/clf/payload = /obj/structure/machinery/prop/almayer/CICmap/clf
 			payload = new()
 			payload.use_power = 0
